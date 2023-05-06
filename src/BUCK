@@ -1,0 +1,6 @@
+python_library(
+    name = "main",
+    srcs = ["__main__.py"],
+    visibility = ["PUBLIC"],
+    base_module = "",
+)
