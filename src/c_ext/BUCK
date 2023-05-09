@@ -1,0 +1,7 @@
+cxx_python_extension(
+    name = "c_ext",
+    srcs = ["ext.c"],
+    visibility = ["PUBLIC"],
+    base_module = "",
+    deps = ["//cpython:includes"],
+)

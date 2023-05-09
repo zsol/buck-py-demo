@@ -1,4 +1,6 @@
 def main() -> None:
+    import c_ext
+
     print("Hello from Python")
 
 

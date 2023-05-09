@@ -3,4 +3,5 @@ python_library(
     srcs = ["__main__.py"],
     visibility = ["PUBLIC"],
     base_module = "",
+    deps = ["//src/c_ext:c_ext"],
 )

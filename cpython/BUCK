@@ -1,0 +1,18 @@
+load(":files.bzl", "headers")
+
+python_bootstrap_binary(
+    name="fetch_includes",
+    main="fetch_includes.py",
+)
+genrule(
+    name = "python_include_path",
+    outs = { file: [file] for file in headers},
+    cmd = "$(exe :fetch_includes)",
+)
+
+cxx_library(
+    name = "includes",
+    exported_headers = {file: ":python_include_path[{}]".format(file) for file in headers},
+    header_namespace = "",
+    visibility = ["PUBLIC"],
+)
