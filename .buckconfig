@@ -1,8 +1,11 @@
-[repositories]
+[cells]
 root = .
 prelude = prelude
 toolchains = toolchains
 none = none
+
+[external_cells]
+prelude = bundled
 
 [repository_aliases]
 config = prelude
