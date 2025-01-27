@@ -5,14 +5,33 @@ python_bootstrap_binary(
     main="fetch_includes.py",
 )
 genrule(
-    name = "python_include_path",
-    outs = { file: [file] for file in headers},
-    cmd = "$(exe :fetch_includes)",
+    name="python_include_path",
+    outs={file: [file] for file in headers},
+    cmd="$(exe :fetch_includes)",
 )
 
 cxx_library(
-    name = "includes",
-    exported_headers = {file: ":python_include_path[{}]".format(file) for file in headers},
-    header_namespace = "",
-    visibility = ["PUBLIC"],
+    name="includes",
+    exported_headers=[":cpython_archive[include]"],
+    header_namespace="",
+    visibility=["PUBLIC"],
+)
+
+http_archive(
+    name="cpython_archive",
+    urls=[
+        "https://github.com/astral-sh/python-build-standalone/releases/download/20250115/cpython-3.13.1%2B20250115-x86_64-pc-windows-msvc-shared-install_only_stripped.tar.gz"
+    ],
+    sha256="8ccd98ae4a4f36a72195ec4063c749f17e39a5f7923fa672757fc69e91892572",
+    strip_prefix="python",
+    sub_targets={
+        "python": ["python.exe"],
+        "include": ["include"],
+    },
+)
+
+command_alias(
+    name="cpython",
+    exe=":cpython_archive[python]",
+    visibility=["PUBLIC"],
 )
