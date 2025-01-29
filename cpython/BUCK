@@ -1,24 +1,5 @@
-load(":files.bzl", "headers")
-
-python_bootstrap_binary(
-    name="fetch_includes",
-    main="fetch_includes.py",
-)
-genrule(
-    name="python_include_path",
-    outs={file: [file] for file in headers},
-    cmd="$(exe :fetch_includes)",
-)
-
-cxx_library(
-    name="includes",
-    exported_headers=[":cpython_archive[include]"],
-    header_namespace="",
-    visibility=["PUBLIC"],
-)
-
 http_archive(
-    name="cpython_archive",
+    name="cpython_archive_win",
     urls=[
         "https://github.com/astral-sh/python-build-standalone/releases/download/20250115/cpython-3.13.1%2B20250115-x86_64-pc-windows-msvc-shared-install_only_stripped.tar.gz"
     ],
@@ -30,8 +11,39 @@ http_archive(
     },
 )
 
+http_archive(
+    name="cpython_archive_macos_aarch64",
+    urls=[
+        "https://github.com/astral-sh/python-build-standalone/releases/download/20250115/cpython-3.13.1%2B20250115-aarch64-apple-darwin-install_only_stripped.tar.gz"
+    ],
+    sha256="650f1d3242667c64959391105525469e0fe1502a6aab9f5db3b0bfefe7dcbabd",
+    strip_prefix="python",
+    sub_targets={
+        "python": ["bin/python"],
+        "include": ["include/python3.13"],
+        "lib": ["lib"],
+    },
+)
+
+alias(
+    name="cpython_archive",
+    actual=select({
+        "prelude//os:windows": ":cpython_archive_win",
+        "prelude//os:macos": select({
+            "prelude//cpu:arm64": ":cpython_archive_macos_aarch64",
+        }),
+    })
+)
+
 command_alias(
     name="cpython",
     exe=":cpython_archive[python]",
+    visibility=["PUBLIC"],
+)
+
+cxx_library(
+    name="includes",
+    exported_preprocessor_flags=["-I$(location :cpython_archive[include])"],
+    exported_linker_flags=["-L$(location :cpython_archive[lib])", "-lpython3.13"],
     visibility=["PUBLIC"],
 )
