@@ -1,16 +1,16 @@
 http_archive(
     name="cpython_archive",
-    urls=select({
-        "prelude//os:windows": ["https://github.com/astral-sh/python-build-standalone/releases/download/20250115/cpython-3.13.1%2B20250115-x86_64-pc-windows-msvc-shared-install_only_stripped.tar.gz"],
+    urls=[select({
+        "prelude//os:windows": "https://github.com/astral-sh/python-build-standalone/releases/download/20250115/cpython-3.13.1%2B20250115-x86_64-pc-windows-msvc-shared-install_only_stripped.tar.gz",
         "prelude//os:macos": select({
-            "prelude//cpu:arm64": ["https://github.com/astral-sh/python-build-standalone/releases/download/20250115/cpython-3.13.1%2B20250115-aarch64-apple-darwin-install_only_stripped.tar.gz"],
-            "prelude//cpu:x86_64": ["https://github.com/astral-sh/python-build-standalone/releases/download/20250115/cpython-3.13.1%2B20250115-x86_64-apple-darwin-install_only_stripped.tar.gz"],
+            "prelude//cpu:arm64": "https://github.com/astral-sh/python-build-standalone/releases/download/20250115/cpython-3.13.1%2B20250115-aarch64-apple-darwin-install_only_stripped.tar.gz",
+            "prelude//cpu:x86_64": "https://github.com/astral-sh/python-build-standalone/releases/download/20250115/cpython-3.13.1%2B20250115-x86_64-apple-darwin-install_only_stripped.tar.gz",
         }),
         "prelude//os:linux": select({
-            "prelude//cpu:arm64": ["https://github.com/astral-sh/python-build-standalone/releases/download/20250115/cpython-3.13.1%2B20250115-aarch64-unknown-linux-gnu-install_only_stripped.tar.gz"],
-            "prelude//cpu:x86_64": ["https://github.com/astral-sh/python-build-standalone/releases/download/20250115/cpython-3.13.1%2B20250115-x86_64_v3-unknown-linux-gnu-install_only_stripped.tar.gz"],
+            "prelude//cpu:arm64": "https://github.com/astral-sh/python-build-standalone/releases/download/20250115/cpython-3.13.1%2B20250115-aarch64-unknown-linux-gnu-install_only_stripped.tar.gz",
+            "prelude//cpu:x86_64": "https://github.com/astral-sh/python-build-standalone/releases/download/20250115/cpython-3.13.1%2B20250115-x86_64_v3-unknown-linux-gnu-install_only_stripped.tar.gz",
         }),
-    }),
+    })],
     sha256=select({
         "prelude//os:windows": "8ccd98ae4a4f36a72195ec4063c749f17e39a5f7923fa672757fc69e91892572",
         "prelude//os:macos": select({
