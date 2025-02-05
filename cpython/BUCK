@@ -26,7 +26,7 @@ http_archive(
     sub_targets={
         "python": [select({"DEFAULT": "bin/python", "prelude//os:windows": "python.exe"})],
         "include": [select({"DEFAULT": "include/python3.13", "prelude//os:windows": "include"})],
-        "lib": ["lib"]
+        "lib": [select({"DEFAULT": "lib", "prelude//os:windows": "libs"})],
     },
 )
 
@@ -39,6 +39,9 @@ command_alias(
 cxx_library(
     name="includes",
     exported_preprocessor_flags=["-I$(location :cpython_archive[include])"],
-    exported_linker_flags=["-L$(location :cpython_archive[lib])", "-lpython3.13"],
+    exported_linker_flags=select({
+        "DEFAULT": ["-L$(location :cpython_archive[lib])", "-lpython3.13"],
+        "prelude//os:windows": ["/LIBPATH:$(location :cpython_archive[lib])"],
+    }),
     visibility=["PUBLIC"],
 )
