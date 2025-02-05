@@ -3,5 +3,6 @@ cxx_python_extension(
     srcs = ["ext.c"],
     visibility = ["PUBLIC"],
     base_module = "",
-    deps = ["//cpython:includes"],
+    # TODO: this should come from the python toolchain
+    preprocessor_flags=["-I$(location toolchains//:cpython_archive[include])"],
 )

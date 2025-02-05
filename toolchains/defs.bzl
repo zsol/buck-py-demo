@@ -6,8 +6,6 @@ def _bundled_python_toolchain_impl(ctx):
         PythonToolchainInfo(
             interpreter=ctx.attrs.interpreter[RunInfo],
             host_interpreter=ctx.attrs.interpreter[RunInfo],
-            binary_linker_flags=[],
-            linker_flags=[],
             fail_with_message=ctx.attrs.fail_with_message[RunInfo],
             generate_static_extension_info=ctx.attrs.generate_static_extension_info,
             compile = RunInfo(args = ["python", ctx.attrs.compile[DefaultInfo].default_outputs[0]]),
@@ -17,6 +15,9 @@ def _bundled_python_toolchain_impl(ctx):
             make_py_package_modules = ctx.attrs.make_py_package_modules[RunInfo],
             make_py_package_inplace = ctx.attrs.make_py_package_inplace[RunInfo],
             runtime_library = ctx.attrs.runtime_library,
+            linker_flags=[],
+            binary_linker_flags=[],
+            extension_linker_flags=ctx.attrs.extension_linker_flags,
         ),
         PythonPlatformInfo(name="x86_64"),
     ]
@@ -32,6 +33,7 @@ bundled_python_toolchain = rule(
         "make_py_package_inplace": attrs.default_only(attrs.dep(providers = [RunInfo], default = "prelude//python/tools:make_py_package_inplace")),
         "make_py_package_modules": attrs.default_only(attrs.dep(providers = [RunInfo], default = "prelude//python/tools:make_py_package_modules")),
         "runtime_library": attrs.default_only(attrs.dep(default = "prelude//python/runtime:bootstrap_files")),
+        "extension_linker_flags": attrs.list(attrs.arg()),
     },
     is_toolchain_rule=True,
 )

@@ -1,25 +1,95 @@
 load("@prelude//toolchains:genrule.bzl", "system_genrule_toolchain")
-load("@prelude//toolchains:python.bzl", "system_python_bootstrap_toolchain", "system_python_toolchain")
+load(
+    "@prelude//toolchains:python.bzl",
+    "system_python_bootstrap_toolchain",
+    "system_python_toolchain",
+)
 load("@prelude//toolchains:cxx.bzl", "system_cxx_toolchain")
 load(":defs.bzl", "bundled_python_toolchain")
 
 system_genrule_toolchain(
-    name = "genrule",
-    visibility = ["PUBLIC"],
+    name="genrule",
+    visibility=["PUBLIC"],
 )
 
 system_cxx_toolchain(
-    name = "cxx",
-    visibility = ["PUBLIC"],
+    name="cxx",
+    visibility=["PUBLIC"],
 )
 
 system_python_bootstrap_toolchain(
-    name = "python_bootstrap",
-    visibility = ["PUBLIC"],
+    name="python_bootstrap",
+    visibility=["PUBLIC"],
+)
+
+http_archive(
+    name="cpython_archive",
+    urls=[
+        select(
+            {
+                "prelude//os:windows": "https://github.com/astral-sh/python-build-standalone/releases/download/20250115/cpython-3.13.1%2B20250115-x86_64-pc-windows-msvc-shared-install_only_stripped.tar.gz",
+                "prelude//os:macos": select(
+                    {
+                        "prelude//cpu:arm64": "https://github.com/astral-sh/python-build-standalone/releases/download/20250115/cpython-3.13.1%2B20250115-aarch64-apple-darwin-install_only_stripped.tar.gz",
+                        "prelude//cpu:x86_64": "https://github.com/astral-sh/python-build-standalone/releases/download/20250115/cpython-3.13.1%2B20250115-x86_64-apple-darwin-install_only_stripped.tar.gz",
+                    }
+                ),
+                "prelude//os:linux": select(
+                    {
+                        "prelude//cpu:arm64": "https://github.com/astral-sh/python-build-standalone/releases/download/20250115/cpython-3.13.1%2B20250115-aarch64-unknown-linux-gnu-install_only_stripped.tar.gz",
+                        "prelude//cpu:x86_64": "https://github.com/astral-sh/python-build-standalone/releases/download/20250115/cpython-3.13.1%2B20250115-x86_64_v3-unknown-linux-gnu-install_only_stripped.tar.gz",
+                    }
+                ),
+            }
+        )
+    ],
+    sha256=select(
+        {
+            "prelude//os:windows": "8ccd98ae4a4f36a72195ec4063c749f17e39a5f7923fa672757fc69e91892572",
+            "prelude//os:macos": select(
+                {
+                    "prelude//cpu:arm64": "650f1d3242667c64959391105525469e0fe1502a6aab9f5db3b0bfefe7dcbabd",
+                    "prelude//cpu:x86_64": "26e0d5320bff7d141531e09849f0735c634bba31003ed6b089b9bf434312a773",
+                }
+            ),
+            "prelude//os:linux": select(
+                {
+                    "prelude//cpu:arm64": "852b909cf77f84814d66fe9a373447c57371edbe88a531781e02a2163247572a",
+                    "prelude//cpu:x86_64": "d6b9f9686d53d5dae86a7dc2c43f905ad2464e71dc3317c9c030c69a4d065db5",
+                }
+            ),
+        }
+    ),
+    strip_prefix="python",
+    sub_targets={
+        "python": [
+            select({"DEFAULT": "bin/python", "prelude//os:windows": "python.exe"})
+        ],
+        "include": [
+            select({"DEFAULT": "include/python3.13", "prelude//os:windows": "include"})
+        ],
+        "lib": [select({"DEFAULT": "lib", "prelude//os:windows": "libs"})],
+    },
+    visibility=["PUBLIC"],
+)
+
+command_alias(
+    name="cpython",
+    exe=":cpython_archive[python]",
+    visibility=["PUBLIC"],
 )
 
 bundled_python_toolchain(
-    name = "python",
-    visibility = ["PUBLIC"],
-    interpreter = "root//cpython:cpython"
+    name="python",
+    visibility=["PUBLIC"],
+    interpreter=":cpython",
+    extension_linker_flags=select(
+        {
+            "DEFAULT": [
+                "-L$(location :cpython_archive[lib])",
+                "-lpython3.13",
+            ],
+            "prelude//os:windows": ["/LIBPATH:$(location :cpython_archive[lib])"],
+        }
+    ),
 )
