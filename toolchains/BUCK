@@ -85,10 +85,7 @@ bundled_python_toolchain(
     interpreter=":cpython",
     extension_linker_flags=select(
         {
-            "DEFAULT": [
-                "-L$(location :cpython_archive[lib])",
-                "-lpython3.13",
-            ],
+            "DEFAULT": ["-L$(location :cpython_archive[lib])"],
             "prelude//os:windows": ["/LIBPATH:$(location :cpython_archive[lib])"],
         }
     ),
