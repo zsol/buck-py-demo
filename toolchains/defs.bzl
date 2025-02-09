@@ -9,7 +9,7 @@ def _bundled_python_toolchain_impl(ctx) -> list[Provider]:
             host_interpreter=ctx.attrs.interpreter[RunInfo],
             fail_with_message=ctx.attrs.fail_with_message[RunInfo],
             generate_static_extension_info=ctx.attrs.generate_static_extension_info,
-            compile = RunInfo(args = ["python", ctx.attrs.compile[DefaultInfo].default_outputs[0]]),
+            compile = ctx.attrs.compile[DefaultInfo].default_outputs[0],
             make_source_db = ctx.attrs.make_source_db[RunInfo],
             package_style = "inplace",
             native_link_strategy = "separate",
