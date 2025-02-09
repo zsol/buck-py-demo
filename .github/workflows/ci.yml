@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest # x86_64
+          - os: ubuntu-22.04-arm # arm64
+          - os: macos-13 # x86_64
+          - os: macos-latest # arm64
+          - os: windows-latest # x86_64
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: facebook/install-dotslash@v2
+      - run: ./buck2 run :demo
