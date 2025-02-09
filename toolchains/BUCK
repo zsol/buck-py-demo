@@ -75,13 +75,23 @@ command_alias(
     visibility=["PUBLIC"],
 )
 
+# TODO: make this into a python_bootstrap_binary
+genrule(
+    name="libpython_symbols",
+    out="out.linker_args",
+    bash="nm $(location :cpython_archive[lib])/libpython*.dylib | grep ' T ' | awk '{sym=substr($3, 1); print(\"-Xlinker\"); print(\"-U\"); print(\"-Xlinker\"); print(sym)}' > $OUT",
+)
+
 bundled_python_toolchain(
     name="python",
     visibility=["PUBLIC"],
     interpreter=":cpython",
     extension_linker_flags=select(
         {
-            "DEFAULT": ["-L$(location :cpython_archive[lib])"],
+            "DEFAULT": [
+                "-L$(location :cpython_archive[lib])",
+                "@$(location :libpython_symbols)",
+            ],
             "prelude//os:windows": ["/LIBPATH:$(location :cpython_archive[lib])"],
         }
     ),
