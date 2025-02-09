@@ -3,3 +3,18 @@ command_alias(
     exe="toolchains//:cpython_archive[python]",
     visibility=["PUBLIC"],
 )
+
+command_alias(
+    name="cpython_dotslash",
+    exe=select({"prelude//os:windows": "cpython-3.13.exe", "DEFAULT": "cpython-3.13"}),
+    visibility=["PUBLIC"],
+)
+
+filegroup(
+    name="dotslash",
+    srcs={
+        "python": "cpython-3.13",
+        "python.exe": "cpython-3.13.exe",
+    },
+    visibility=["PUBLIC"],
+)

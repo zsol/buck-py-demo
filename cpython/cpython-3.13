@@ -1,0 +1,72 @@
+#!/usr/bin/env dotslash
+
+{
+  "name": "cpython-3.13",
+  "platforms": {
+    "linux-aarch64": {
+      "arg0": "underlying-executable",
+      "digest": "48c3606cd722cda71b6331b957a64d75efc8e9e3eea7ff34eac032249f2426ba",
+      "format": "tar.gz",
+      "hash": "sha256",
+      "path": "python/bin/python",
+      "providers": [
+        {
+          "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20250205/cpython-3.13.2%2B20250205-aarch64-unknown-linux-gnu-install_only_stripped.tar.gz"
+        }
+      ],
+      "size": 17625579
+    },
+    "linux-x86_64": {
+      "arg0": "underlying-executable",
+      "digest": "8c8c6831b67cce93f4f3d5e2d87d5fb08bfe1dfb3290d5f3b82a2bbc70af0774",
+      "format": "tar.gz",
+      "hash": "sha256",
+      "path": "python/bin/python",
+      "providers": [
+        {
+          "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20250205/cpython-3.13.2%2B20250205-x86_64_v3-unknown-linux-gnu-install_only_stripped.tar.gz"
+        }
+      ],
+      "size": 21216341
+    },
+    "macos-aarch64": {
+      "arg0": "underlying-executable",
+      "digest": "d0293045b2ef6a787554d361754b7befae7e177d1aaf1012ba6718f6475b9257",
+      "format": "tar.gz",
+      "hash": "sha256",
+      "path": "python/bin/python",
+      "providers": [
+        {
+          "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20250205/cpython-3.13.2%2B20250205-aarch64-apple-darwin-install_only_stripped.tar.gz"
+        }
+      ],
+      "size": 15611166
+    },
+    "macos-x86_64": {
+      "arg0": "underlying-executable",
+      "digest": "d6e36ad4d4df1581e6f960236cdf108d4af88313f49a8934c3f9a71724307ec4",
+      "format": "tar.gz",
+      "hash": "sha256",
+      "path": "python/bin/python",
+      "providers": [
+        {
+          "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20250205/cpython-3.13.2%2B20250205-x86_64-apple-darwin-install_only_stripped.tar.gz"
+        }
+      ],
+      "size": 15928785
+    },
+    "windows-x86_64": {
+      "arg0": "underlying-executable",
+      "digest": "e55b0cbf9d72b73750079cd61f0d0e173f84f8220a8c34c40df0542d7cc2e36d",
+      "format": "tar.gz",
+      "hash": "sha256",
+      "path": "python/python.exe",
+      "providers": [
+        {
+          "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20250205/cpython-3.13.2%2B20250205-x86_64-pc-windows-msvc-shared-install_only_stripped.tar.gz"
+        }
+      ],
+      "size": 21119735
+    }
+  }
+}

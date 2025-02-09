@@ -1,6 +1,7 @@
 load("@prelude//python:toolchain.bzl", "PythonToolchainInfo", "PythonPlatformInfo")
+load("@prelude//python_bootstrap:python_bootstrap.bzl", "PythonBootstrapToolchainInfo")
 
-def _bundled_python_toolchain_impl(ctx):
+def _bundled_python_toolchain_impl(ctx) -> list[Provider]:
     return [
         DefaultInfo(),
         PythonToolchainInfo(
@@ -34,6 +35,22 @@ bundled_python_toolchain = rule(
         "make_py_package_modules": attrs.default_only(attrs.dep(providers = [RunInfo], default = "prelude//python/tools:make_py_package_modules")),
         "runtime_library": attrs.default_only(attrs.dep(default = "prelude//python/runtime:bootstrap_files")),
         "extension_linker_flags": attrs.list(attrs.arg()),
+    },
+    is_toolchain_rule=True,
+)
+
+def _bundled_python_bootstrap_toolchain_impl(ctx) -> list[Provider]:
+    return [
+        DefaultInfo(),
+        PythonBootstrapToolchainInfo(
+            interpreter=ctx.attrs.interpreter,
+        )
+    ]
+
+bundled_python_bootstrap_toolchain = rule(
+    impl = _bundled_python_bootstrap_toolchain_impl,
+    attrs = {
+        "interpreter": attrs.arg(),
     },
     is_toolchain_rule=True,
 )
