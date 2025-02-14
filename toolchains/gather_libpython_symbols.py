@@ -44,10 +44,8 @@ def main() -> None:
             if sys.platform == "linux":
                 f.write(f"-Wl,--undefined={symbol}\n")
             else:
-                f.write("-Xlinker\n")
-                f.write("-U\n")
-                f.write("-Xlinker\n")
-                f.write(f"{symbol}\n")
+                f.write("-Wl,-U\n")
+                f.write(f"-Wl,{symbol}\n")
 
 
 if __name__ == "__main__":
