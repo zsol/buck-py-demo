@@ -75,11 +75,15 @@ command_alias(
     visibility=["PUBLIC"],
 )
 
-# TODO: make this into a python_bootstrap_binary
+python_bootstrap_binary(
+    name = "gather_libpython_symbols",
+    main = "gather_libpython_symbols.py",
+)
+
 genrule(
     name="libpython_symbols",
     out="out.linker_args",
-    bash="nm $(location :cpython_archive[lib])/libpython*.dylib | grep ' T ' | awk '{sym=substr($3, 1); print(\"-Xlinker\"); print(\"-U\"); print(\"-Xlinker\"); print(sym)}' > $OUT",
+    bash='$(exe :gather_libpython_symbols) "$OUT"',
 )
 
 bundled_python_toolchain(
