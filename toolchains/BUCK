@@ -75,13 +75,27 @@ command_alias(
     visibility=["PUBLIC"],
 )
 
+python_bootstrap_binary(
+    name = "gather_libpython_symbols",
+    main = "gather_libpython_symbols.py",
+)
+
+genrule(
+    name="libpython_symbols",
+    out="out.linker_args",
+    bash='$(exe :gather_libpython_symbols) "$OUT"',
+)
+
 bundled_python_toolchain(
     name="python",
     visibility=["PUBLIC"],
     interpreter=":cpython",
     extension_linker_flags=select(
         {
-            "DEFAULT": ["-L$(location :cpython_archive[lib])"],
+            "DEFAULT": [
+                "-L$(location :cpython_archive[lib])",
+                "@$(location :libpython_symbols)",
+            ],
             "prelude//os:windows": ["/LIBPATH:$(location :cpython_archive[lib])"],
         }
     ),
