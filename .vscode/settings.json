@@ -1,0 +1,9 @@
+{
+  "glspc.server.command": "buck2",
+  "glspc.server.commandArguments": ["lsp"],
+  "glspc.server.languageId": ["starlark"],
+  "files.associations": {
+    "*.bzl": "starlark",
+    "BUCK": "starlark"
+  }
+}
