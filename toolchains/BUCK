@@ -1,6 +1,6 @@
 load("@prelude//toolchains:genrule.bzl", "system_genrule_toolchain")
 load("@prelude//toolchains:cxx.bzl", "system_cxx_toolchain")
-load(":defs.bzl", "bundled_python_toolchain", "bundled_python_bootstrap_toolchain")
+load("@prelude//toolchains:python.bzl", "remote_python_toolchain", "system_python_bootstrap_toolchain")
 
 system_genrule_toolchain(
     name="genrule",
@@ -12,14 +12,13 @@ system_cxx_toolchain(
     visibility=["PUBLIC"],
 )
 
-bundled_python_bootstrap_toolchain(
-    name="python_bootstrap",
+remote_python_toolchain(
+    name="python",
     visibility=["PUBLIC"],
-    interpreter="$(location root//cpython:dotslash)" + select({"prelude//os:windows": "\\python.exe", "DEFAULT": "/python"}),
 )
 
 http_archive(
-    name="cpython_archive",
+    name="custom_cpython_archive",
     urls=[
         select(
             {
@@ -69,34 +68,7 @@ http_archive(
     visibility=["PUBLIC"],
 )
 
-command_alias(
-    name="cpython",
-    exe=":cpython_archive[python]",
+system_python_bootstrap_toolchain(
+    name="python_bootstrap",
     visibility=["PUBLIC"],
-)
-
-python_bootstrap_binary(
-    name = "gather_libpython_symbols",
-    main = "gather_libpython_symbols.py",
-)
-
-genrule(
-    name="libpython_symbols",
-    out="out.linker_args",
-    bash='$(exe :gather_libpython_symbols) "$OUT"',
-)
-
-bundled_python_toolchain(
-    name="python",
-    visibility=["PUBLIC"],
-    interpreter=":cpython",
-    extension_linker_flags=select(
-        {
-            "DEFAULT": [
-                "-L$(location :cpython_archive[lib])",
-                "@$(location :libpython_symbols)",
-            ],
-            "prelude//os:windows": ["/LIBPATH:$(location :cpython_archive[lib])"],
-        }
-    ),
 )

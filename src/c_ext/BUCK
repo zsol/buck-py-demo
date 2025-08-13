@@ -4,5 +4,5 @@ cxx_python_extension(
     visibility = ["PUBLIC"],
     base_module = "",
     # TODO: this should come from the python toolchain
-    preprocessor_flags=["-I$(location toolchains//:cpython_archive[include])"],
+    preprocessor_flags=["-I$(location toolchains//:custom_cpython_archive[include])"],
 )
